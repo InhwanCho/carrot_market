@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  relationMode = "prisma"
+  url          = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  phone    BigInt?  @unique
+  email    String?  @unique
+  name     String
+  avatar   String?
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  tokens   Token[]
+}
+
+model Token {
+  id       Int      @id @default(autoincrement())
+  payload  String   @unique //tokenId
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int      
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+}
